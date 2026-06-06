@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Laporan;
@@ -12,10 +13,16 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    $laporans = Laporan::where('user_id', auth()->id())
-        ->orderBy('tanggal', 'desc')
-        ->take(5)
-        ->get();
+    if (auth()->user()->role === 'admin') {
+        $laporans = Laporan::orderBy('tanggal', 'desc')
+            ->take(5)
+            ->get();
+    } else {
+        $laporans = Laporan::where('user_id', auth()->id())
+            ->orderBy('tanggal', 'desc')
+            ->take(5)
+            ->get();
+    }
 
     $chartData = null;
     $chartLabels = null;
@@ -51,7 +58,9 @@ Route::middleware('auth')->group(function () {
     Route::get('laporan/export/excel', [LaporanController::class, 'exportExcel'])->name('laporan.export.excel');
     Route::post('laporan/{laporan}/komentar', [LaporanController::class, 'storeComment'])->name('laporan.komentar.store');
 
-    Route::prefix('admin')->name('admin.')->group(function () {
+    Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
+        Route::get('laporan', [AdminLaporanController::class, 'index'])->name('laporan.index');
+        Route::get('laporan/{laporan}', [AdminLaporanController::class, 'show'])->name('laporan.show');
         Route::get('siswa', [\App\Http\Controllers\Admin\SiswaController::class, 'index'])->name('siswa.index');
         Route::get('siswa/{user}', [\App\Http\Controllers\Admin\SiswaController::class, 'show'])->name('siswa.show');
         Route::patch('siswa/{user}/tempat-pkl', [\App\Http\Controllers\Admin\SiswaController::class, 'updateTempatPkl'])->name('siswa.tempat-pkl');

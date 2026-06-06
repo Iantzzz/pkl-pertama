@@ -12,6 +12,7 @@ class Presensi extends Model
         'tanggal',
         'status',
         'keterangan',
+        'foto',
     ];
 
     public function user(): BelongsTo

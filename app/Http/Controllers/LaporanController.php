@@ -8,7 +8,7 @@ use App\Notifications\KomentarBaru;
 use App\Notifications\LaporanVerified;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Writer\XLSX\Writer;
 
@@ -16,6 +16,10 @@ class LaporanController extends Controller
 {
     public function index(Request $request)
     {
+        if (auth()->user()->role === 'admin') {
+            return redirect()->route('admin.laporan.index');
+        }
+
         $query = Laporan::where('user_id', auth()->id());
 
         if ($request->filled('search')) {
@@ -56,11 +60,19 @@ class LaporanController extends Controller
 
         $validated['user_id'] = auth()->id();
 
+        Log::info('Laporan store: hasFile(foto)=' . ($request->hasFile('foto') ? 'true' : 'false'));
+
         if ($request->hasFile('foto')) {
-            $validated['foto'] = $request->file('foto')->store('fotos', 'public');
+            $file = $request->file('foto');
+            Log::info('Laporan store: file valid=' . ($file->isValid() ? 'true' : 'false') . ' size=' . $file->getSize() . ' ext=' . $file->getClientOriginalExtension());
+            $filename = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
+            $file->move(public_path('uploads/laporans'), $filename);
+            $validated['foto'] = 'uploads/laporans/' . $filename;
+            Log::info('Laporan store: foto saved to ' . $validated['foto']);
         }
 
-        Laporan::create($validated);
+        $laporan = Laporan::create($validated);
+        Log::info('Laporan store: created id=' . $laporan->id . ' foto=' . ($laporan->foto ?? 'null'));
 
         return redirect()->route('laporan.index')->with('success', 'Laporan berhasil ditambahkan.');
     }
@@ -89,10 +101,13 @@ class LaporanController extends Controller
         ]);
 
         if ($request->hasFile('foto')) {
-            if ($laporan->foto) {
-                Storage::disk('public')->delete($laporan->foto);
+            if ($laporan->foto && file_exists(public_path($laporan->foto))) {
+                unlink(public_path($laporan->foto));
             }
-            $validated['foto'] = $request->file('foto')->store('fotos', 'public');
+            $file = $request->file('foto');
+            $filename = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
+            $file->move(public_path('uploads/laporans'), $filename);
+            $validated['foto'] = 'uploads/laporans/' . $filename;
         }
 
         $laporan->update($validated);
@@ -104,8 +119,8 @@ class LaporanController extends Controller
     {
         $this->authorizeView($laporan);
 
-        if ($laporan->foto) {
-            Storage::disk('public')->delete($laporan->foto);
+        if ($laporan->foto && file_exists(public_path($laporan->foto))) {
+            unlink(public_path($laporan->foto));
         }
 
         $laporan->delete();

@@ -1,11 +1,7 @@
 <section class="space-y-6">
     <header>
-        <h2 class="font-serif text-lg font-semibold text-warm-900 dark:text-warm-50">
-            {{ __('Delete Account') }}
-        </h2>
-        <p class="mt-1 text-sm text-warm-500 dark:text-gold-300/70">
-            {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.') }}
-        </p>
+        <h2 class="text-base font-semibold text-warm-900 dark:text-warm-50">Delete Account</h2>
+        <p class="mt-1 text-sm text-warm-500 dark:text-warm-400">Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.</p>
     </header>
 
     <x-danger-button
@@ -18,11 +14,11 @@
             @csrf
             @method('delete')
 
-            <h2 class="font-serif text-lg font-semibold text-warm-900 dark:text-warm-50">
+            <h2 class="text-base font-semibold text-warm-900 dark:text-warm-50">
                 {{ __('Are you sure you want to delete your account?') }}
             </h2>
 
-            <p class="mt-2 text-sm text-warm-500 dark:text-gold-300/70">
+            <p class="mt-2 text-sm text-warm-500 dark:text-warm-400">
                 {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
             </p>
 

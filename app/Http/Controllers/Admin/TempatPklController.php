@@ -8,16 +8,6 @@ use Illuminate\Http\Request;
 
 class TempatPklController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware(function ($request, $next) {
-            if (auth()->user()->role !== 'admin') {
-                abort(403);
-            }
-            return $next($request);
-        });
-    }
-
     public function index()
     {
         $tempatPkls = TempatPkl::orderBy('nama_perusahaan')->paginate(10);

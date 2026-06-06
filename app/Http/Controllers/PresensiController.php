@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Presensi;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class PresensiController extends Controller
 {
@@ -49,14 +50,29 @@ class PresensiController extends Controller
         $validated = $request->validate([
             'status' => 'required|in:hadir,sakit,izin,alpha',
             'keterangan' => 'nullable|string|max:500',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        Presensi::create([
+        $data = [
             'user_id' => auth()->id(),
             'tanggal' => $today,
             'status' => $validated['status'],
             'keterangan' => $validated['keterangan'] ?? null,
-        ]);
+        ];
+
+        Log::info('Presensi store: hasFile(foto)=' . ($request->hasFile('foto') ? 'true' : 'false'));
+
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            Log::info('Presensi store: file valid=' . ($file->isValid() ? 'true' : 'false') . ' size=' . $file->getSize() . ' ext=' . $file->getClientOriginalExtension());
+            $filename = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
+            $file->move(public_path('uploads/presensi'), $filename);
+            $data['foto'] = 'uploads/presensi/' . $filename;
+            Log::info('Presensi store: foto saved to ' . $data['foto']);
+        }
+
+        $presensi = Presensi::create($data);
+        Log::info('Presensi store: created id=' . $presensi->id . ' foto=' . ($presensi->foto ?? 'null'));
 
         return redirect()->route('presensi.index')
             ->with('success', 'Presensi berhasil dicatat.');

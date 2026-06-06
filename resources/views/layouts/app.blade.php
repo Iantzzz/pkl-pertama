@@ -23,37 +23,21 @@
         <link href="https://fonts.bunny.net/css?family=playfair-display:400,600,700,800&display=swap" rel="stylesheet" />
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
-        <script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                if (document.querySelector('.tinymce')) {
-                    tinymce.init({
-                        selector: '.tinymce',
-                        height: 300,
-                        menubar: false,
-                        plugins: 'lists link image',
-                        toolbar: 'undo redo | bold italic | bullist numlist | alignleft aligncenter alignright | link',
-                        content_style: 'body { font-family: Figtree, sans-serif; font-size: 14px; }'
-                    });
-                }
-            });
-        </script>
     </head>
-    <body class="font-sans bg-warm-50 dark:bg-warm-950 text-warm-900 dark:text-warm-50 min-h-screen transition-colors duration-300">
+    <body class="font-sans antialiased bg-warm-50 dark:bg-warm-950">
         <div class="min-h-screen">
             @include('layouts.navigation')
 
-            @isset($header)
-                <div class="border-b border-gold-500/10 dark:border-gold-500/10 bg-white dark:bg-warm-900">
-                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-                        {{ $header }}
-                    </div>
-                </div>
-            @endisset
+            <div class="lg:pl-64">
+                <main>
+                    {{ $slot }}
+                </main>
+            </div>
+        </div>
 
-            <main class="animate-fade-in">
-                {{ $slot }}
-            </main>
+        <div id="lightbox-overlay" class="fixed inset-0 z-50 bg-black/80 hidden items-center justify-center p-4" onclick="closeLightbox(event)">
+            <button onclick="closeLightbox(event)" class="absolute top-4 right-4 text-white/80 hover:text-white text-3xl leading-none w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/10 transition-all">&times;</button>
+            <img id="lightbox-img" src="" class="max-w-full max-h-full rounded-xl shadow-2xl object-contain" style="max-height: 90vh;">
         </div>
 
         <script>
@@ -67,6 +51,29 @@
                     localStorage.setItem('theme', 'dark');
                 }
             }
+
+            function openLightbox(src) {
+                document.getElementById('lightbox-img').src = src;
+                document.getElementById('lightbox-overlay').classList.remove('hidden');
+                document.getElementById('lightbox-overlay').classList.add('flex');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeLightbox(e) {
+                if (e) e.stopPropagation();
+                document.getElementById('lightbox-overlay').classList.add('hidden');
+                document.getElementById('lightbox-overlay').classList.remove('flex');
+                document.body.style.overflow = '';
+            }
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    var overlay = document.getElementById('lightbox-overlay');
+                    if (overlay && !overlay.classList.contains('hidden')) {
+                        closeLightbox(e);
+                    }
+                }
+            });
         </script>
 
         @stack('scripts')

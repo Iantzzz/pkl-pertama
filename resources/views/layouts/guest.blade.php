@@ -24,25 +24,25 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center px-4 py-10 sm:py-16 bg-warm-50 dark:bg-warm-950 relative">
-            <div class="absolute inset-0 bg-gradient-to-br from-gold-500/5 to-transparent dark:from-gold-500/5 dark:to-transparent pointer-events-none"></div>
+    <body class="font-sans antialiased">
+        <div class="min-h-screen flex flex-col sm:justify-center items-center px-4 py-12 sm:py-20 bg-warm-50 dark:bg-warm-950 relative">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-transparent dark:from-blue-500/[0.07] pointer-events-none"></div>
 
-            <div class="relative w-full max-w-md">
+            <div class="relative w-full max-w-sm">
                 <div class="text-center mb-8">
-                    <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gold-gradient shadow-gold-sm mb-5">
-                        <span class="text-2xl font-bold text-warm-900 font-serif">PKL</span>
+                    <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-blue-gradient shadow-sm mb-4">
+                        <span class="text-lg font-bold text-white font-serif">PKL</span>
                     </div>
-                    <h1 class="font-serif text-3xl font-bold text-warm-900 dark:text-warm-50">Monitoring PKL</h1>
-                    <p class="text-warm-500 dark:text-gold-300/70 text-sm mt-1.5 tracking-wide">Sistem Informasi Praktik Kerja Lapangan</p>
+                    <h1 class="text-xl font-semibold text-warm-900 dark:text-warm-50">Monitoring PKL</h1>
+                    <p class="text-sm text-warm-500 dark:text-warm-400 mt-1">Sistem Informasi Praktik Kerja Lapangan</p>
                 </div>
 
-                <div class="bg-white dark:bg-warm-900 rounded-2xl shadow-warm-lg dark:shadow-warm-xl border border-warm-200 dark:border-gold-500/15 p-8">
+                <div class="bg-white dark:bg-warm-800 rounded-2xl shadow-sm border border-warm-200 dark:border-warm-700 p-8">
                     {{ $slot }}
                 </div>
 
                 <div class="text-center mt-6">
-                    <button onclick="toggleDarkModeGuest()" class="text-warm-400 dark:text-gold-300/60 hover:text-warm-600 dark:hover:text-gold-300 transition-colors text-sm tracking-wide">
+                    <button onclick="toggleDarkModeGuest()" class="text-warm-400 dark:text-warm-500 hover:text-warm-600 dark:hover:text-warm-300 transition-colors text-sm">
                         <span id="guestThemeLabel"></span>
                     </button>
                 </div>
@@ -55,9 +55,9 @@
             function updateGuestLabel() {
                 if (guestLabel) {
                     if (guestHtml.classList.contains('dark')) {
-                        guestLabel.textContent = '\u260C\xa0Switch to Light Mode';
+                        guestLabel.textContent = '\u260C\u00a0Light Mode';
                     } else {
-                        guestLabel.textContent = '\u2609\xa0Switch to Dark Mode';
+                        guestLabel.textContent = '\u2609\u00a0Dark Mode';
                     }
                 }
             }

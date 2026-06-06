@@ -1,143 +1,161 @@
-<nav x-data="{ open: false }" class="sticky top-0 z-50 bg-white dark:bg-warm-900 border-b border-warm-200 dark:border-gold-500/10 shadow-warm-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" class="flex items-center space-x-3">
-                        <div class="w-9 h-9 rounded-lg bg-gold-gradient flex items-center justify-center shadow-gold-sm">
-                            <span class="text-base font-bold text-warm-900 font-serif">PKL</span>
-                        </div>
-                        <span class="hidden sm:block font-serif font-semibold text-lg text-warm-900 dark:text-warm-50">Monitoring</span>
-                    </a>
+<!-- Mobile Overlay -->
+<div x-data="{ open: false }" class="lg:hidden">
+    <div x-show="open" x-transition:enter="transition-opacity ease-linear duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 z-40 bg-warm-900/60 dark:bg-warm-950/80" @click="open = false"></div>
+
+    <!-- Mobile nav -->
+    <div x-show="open" x-transition:enter="transition-transform ease-in-out duration-300" x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0" x-transition:leave="transition-transform ease-in-out duration-300" x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full" class="fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-warm-800 border-r border-warm-200 dark:border-warm-700">
+        <div class="flex items-center justify-between h-16 px-6 border-b border-warm-200 dark:border-warm-700">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-lg bg-blue-gradient flex items-center justify-center">
+                    <span class="text-sm font-bold text-white font-serif">PKL</span>
                 </div>
-
-                <div class="hidden sm:flex sm:items-center sm:ms-10 sm:space-x-1">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        Dashboard
-                    </x-nav-link>
-                    <x-nav-link :href="route('laporan.index')" :active="request()->routeIs('laporan.*')">
-                        Laporan PKL
-                    </x-nav-link>
-                    <x-nav-link :href="route('presensi.index')" :active="request()->routeIs('presensi.*')">
-                        Presensi
-                    </x-nav-link>
-                    @if(Auth::user()->role === 'admin')
-                        <x-nav-link :href="route('admin.siswa.index')" :active="request()->routeIs('admin.siswa.*')">
-                            Siswa
-                        </x-nav-link>
-                        <x-nav-link :href="route('admin.tempat-pkl.index')" :active="request()->routeIs('admin.tempat-pkl.*')">
-                            Tempat PKL
-                        </x-nav-link>
-                    @endif
-                </div>
+                <span class="font-semibold text-warm-900 dark:text-warm-50">Monitoring</span>
             </div>
-
-            <div class="hidden sm:flex sm:items-center sm:space-x-3">
-                <button onclick="toggleDarkMode()" class="p-2 rounded-lg text-warm-400 dark:text-gold-300/70 hover:text-gold-600 dark:hover:text-gold-300 hover:bg-gold-500/10 dark:hover:bg-gold-500/10 transition-all duration-200" title="Toggle theme">
-                    <svg class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                    </svg>
-                    <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                </button>
-
-                <x-dropdown align="right" width="48">
-                    <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-warm-200 dark:border-gold-500/20 text-sm leading-4 font-medium rounded-xl text-warm-700 dark:text-gold-300 bg-warm-50 dark:bg-warm-800 hover:bg-gold-500/10 dark:hover:bg-gold-500/10 hover:border-gold-500/30 focus:outline-none transition-all duration-200">
-                            <div class="w-6 h-6 rounded-full bg-gold-gradient flex items-center justify-center mr-2">
-                                <span class="text-xs font-bold text-warm-900">{{ substr(Auth::user()->name, 0, 1) }}</span>
-                            </div>
-                            <div>{{ Auth::user()->name }}</div>
-                            <div class="ms-1">
-                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-                                </svg>
-                            </div>
-                        </button>
-                    </x-slot>
-
-                    <x-slot name="content">
-                        <div class="px-4 py-3 border-b border-warm-200 dark:border-gold-500/10">
-                            <p class="text-sm font-medium text-warm-900 dark:text-warm-50">{{ Auth::user()->name }}</p>
-                            <p class="text-xs text-warm-500 dark:text-gold-300/70 truncate">{{ Auth::user()->email }}</p>
-                        </div>
-                        <div class="py-1">
-                            <x-dropdown-link :href="route('profile.edit')">
-                                Profile
-                            </x-dropdown-link>
-                        </div>
-                        <div class="border-t border-warm-200 dark:border-gold-500/10 py-1">
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <x-dropdown-link :href="route('logout')"
-                                        onclick="event.preventDefault(); this.closest('form').submit();">
-                                    Log Out
-                                </x-dropdown-link>
-                            </form>
-                        </div>
-                    </x-slot>
-                </x-dropdown>
-            </div>
-
-            <div class="flex items-center sm:hidden space-x-1">
-                <button onclick="toggleDarkMode()" class="p-2 rounded-lg text-warm-400 dark:text-gold-300/70 hover:text-gold-600 dark:hover:text-gold-300 hover:bg-gold-500/10 dark:hover:bg-gold-500/10 transition-all duration-200">
-                    <svg class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                    </svg>
-                    <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                    </svg>
-                </button>
-
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-lg text-warm-400 dark:text-gold-300/70 hover:text-gold-600 dark:hover:text-gold-300 hover:bg-gold-500/10 dark:hover:bg-gold-500/10 transition-all duration-200">
-                    <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
-                        <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </div>
+            <button @click="open = false" class="p-2 rounded-lg text-warm-400 hover:text-warm-600 dark:hover:text-warm-200 hover:bg-warm-100 dark:hover:bg-warm-700">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
         </div>
-    </div>
-
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-white dark:bg-warm-900 border-t border-warm-200 dark:border-gold-500/10">
-        <div class="pt-2 pb-3 space-y-1 px-4">
+        <nav class="px-3 py-4 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
                 Dashboard
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('laporan.index')" :active="request()->routeIs('laporan.*')">
+                <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                 Laporan PKL
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('presensi.index')" :active="request()->routeIs('presensi.*')">
+                <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
                 Presensi
             </x-responsive-nav-link>
             @if(Auth::user()->role === 'admin')
+                <div class="pt-4 pb-2">
+                    <p class="px-3 text-xs font-semibold uppercase tracking-wider text-warm-400 dark:text-warm-500">Admin</p>
+                </div>
                 <x-responsive-nav-link :href="route('admin.siswa.index')" :active="request()->routeIs('admin.siswa.*')">
+                    <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                     Siswa
                 </x-responsive-nav-link>
                 <x-responsive-nav-link :href="route('admin.tempat-pkl.index')" :active="request()->routeIs('admin.tempat-pkl.*')">
+                    <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
                     Tempat PKL
                 </x-responsive-nav-link>
             @endif
-        </div>
-
-        <div class="pt-4 pb-3 border-t border-warm-200 dark:border-gold-500/10">
-            <div class="px-4">
-                <div class="font-medium text-warm-900 dark:text-warm-50">{{ Auth::user()->name }}</div>
-                <div class="text-sm text-warm-500 dark:text-gold-300/70">{{ Auth::user()->email }}</div>
+        </nav>
+        <div class="absolute bottom-0 left-0 right-0 p-4 border-t border-warm-200 dark:border-warm-700">
+            <div class="flex items-center space-x-3 px-3 py-2">
+                <div class="w-8 h-8 rounded-full bg-blue-gradient flex items-center justify-center flex-shrink-0">
+                    <span class="text-xs font-bold text-white">{{ substr(Auth::user()->name, 0, 1) }}</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-warm-900 dark:text-warm-50 truncate">{{ Auth::user()->name }}</p>
+                    <p class="text-xs text-warm-500 dark:text-warm-400 truncate">{{ Auth::user()->email }}</p>
+                </div>
             </div>
-            <div class="mt-3 space-y-1 px-4">
-                <x-responsive-nav-link :href="route('profile.edit')">
+            <div class="mt-2 space-y-1">
+                <a href="{{ route('profile.edit') }}" class="flex items-center px-3 py-2 text-sm text-warm-600 dark:text-warm-300 hover:text-warm-900 dark:hover:text-warm-50 hover:bg-warm-100 dark:hover:bg-warm-700 rounded-lg transition-colors">
+                    <svg class="w-4 h-4 mr-2.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
                     Profile
-                </x-responsive-nav-link>
+                </a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault(); this.closest('form').submit();">
+                    <button type="submit" class="w-full flex items-center px-3 py-2 text-sm text-warm-600 dark:text-warm-300 hover:text-red-600 dark:hover:text-red-400 hover:bg-warm-100 dark:hover:bg-warm-700 rounded-lg transition-colors">
+                        <svg class="w-4 h-4 mr-2.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                         Log Out
-                    </x-responsive-nav-link>
+                    </button>
                 </form>
             </div>
         </div>
     </div>
-</nav>
+</div>
+
+<!-- Desktop Sidebar -->
+<div class="hidden lg:fixed lg:inset-y-0 lg:z-30 lg:flex lg:w-64 lg:flex-col">
+    <div class="flex flex-col flex-grow bg-white dark:bg-warm-800 border-r border-warm-200 dark:border-warm-700 overflow-y-auto">
+        <div class="flex items-center h-16 px-6 border-b border-warm-200 dark:border-warm-700">
+            <div class="w-8 h-8 rounded-lg bg-blue-gradient flex items-center justify-center shadow-blue-sm">
+                <span class="text-sm font-bold text-white font-serif">PKL</span>
+            </div>
+            <span class="ml-3 font-semibold text-warm-900 dark:text-warm-50">Monitoring</span>
+        </div>
+        <nav class="flex-1 px-3 py-4 space-y-1">
+            <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                Dashboard
+            </x-nav-link>
+            <x-nav-link :href="route('laporan.index')" :active="request()->routeIs('laporan.*')">
+                <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                Laporan PKL
+            </x-nav-link>
+            <x-nav-link :href="route('presensi.index')" :active="request()->routeIs('presensi.*')">
+                <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                Presensi
+            </x-nav-link>
+            @if(Auth::user()->role === 'admin')
+                <div class="pt-6 pb-2">
+                    <p class="px-3 text-xs font-semibold uppercase tracking-wider text-warm-400 dark:text-warm-500">Manajemen</p>
+                </div>
+                <x-nav-link :href="route('admin.siswa.index')" :active="request()->routeIs('admin.siswa.*')">
+                    <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    Siswa
+                </x-nav-link>
+                <x-nav-link :href="route('admin.tempat-pkl.index')" :active="request()->routeIs('admin.tempat-pkl.*')">
+                    <svg class="w-5 h-5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                    Tempat PKL
+                </x-nav-link>
+            @endif
+        </nav>
+        <div class="p-4 border-t border-warm-200 dark:border-warm-700">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3 min-w-0">
+                    <div class="w-8 h-8 rounded-full bg-blue-gradient flex items-center justify-center flex-shrink-0">
+                        <span class="text-xs font-bold text-white">{{ substr(Auth::user()->name, 0, 1) }}</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="text-sm font-medium text-warm-900 dark:text-warm-50 truncate">{{ Auth::user()->name }}</p>
+                        <p class="text-xs text-warm-500 dark:text-warm-400 truncate">{{ Auth::user()->email }}</p>
+                    </div>
+                </div>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="p-1.5 rounded-lg text-warm-400 hover:text-red-500 hover:bg-warm-100 dark:hover:bg-warm-700 transition-colors" title="Logout">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Top Bar (Desktop) -->
+<div class="sticky top-0 z-20 bg-white/90 dark:bg-warm-800/90 backdrop-blur-md border-b border-warm-200 dark:border-warm-700">
+    <div class="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center">
+            <!-- Mobile menu button -->
+            <button @click="$el.closest('[x-data]').__x.$data.open = true" class="lg:hidden p-2 -ml-2 rounded-lg text-warm-400 hover:text-warm-600 dark:hover:text-warm-200 hover:bg-warm-100 dark:hover:bg-warm-700 transition-colors">
+                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            @isset($header)
+                <div class="ml-2 lg:ml-0">
+                    {{ $header }}
+                </div>
+            @endisset
+        </div>
+        <div class="flex items-center space-x-3">
+            <button onclick="toggleDarkMode()" class="p-2 rounded-lg text-warm-400 hover:text-blue-600 dark:hover:text-blue-300 hover:bg-blue-500/10 dark:hover:bg-blue-500/10 transition-all duration-200" title="Toggle theme">
+                <svg class="w-5 h-5 block dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+                <svg class="w-5 h-5 hidden dark:block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            </button>
+            <a href="{{ route('profile.edit') }}" class="flex items-center space-x-2.5 p-1.5 rounded-lg hover:bg-warm-100 dark:hover:bg-warm-700 transition-colors">
+                <div class="w-7 h-7 rounded-full bg-blue-gradient flex items-center justify-center flex-shrink-0">
+                    <span class="text-xs font-bold text-white">{{ substr(Auth::user()->name, 0, 1) }}</span>
+                </div>
+                <div class="hidden sm:block text-sm font-medium text-warm-700 dark:text-warm-200">{{ Auth::user()->name }}</div>
+            </a>
+        </div>
+    </div>
+</div>
