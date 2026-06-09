@@ -3,9 +3,6 @@
 use App\Http\Controllers\Admin\LaporanController as AdminLaporanController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ProfileController;
-use App\Models\Laporan;
-use App\Models\User;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -47,6 +44,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
+    Route::get('laporan/export/pdf', [LaporanController::class, 'exportPdf'])->name('laporan.export.pdf');
+    Route::get('laporan/export/excel', [LaporanController::class, 'exportExcel'])->name('laporan.export.excel');
     Route::resource('laporan', LaporanController::class);
     Route::get('presensi', [\App\Http\Controllers\PresensiController::class, 'index'])->name('presensi.index');
     Route::get('presensi/create', [\App\Http\Controllers\PresensiController::class, 'create'])->name('presensi.create');
@@ -54,8 +53,6 @@ Route::middleware('auth')->group(function () {
 
     Route::patch('laporan/{laporan}/status', [LaporanController::class, 'updateStatus'])->name('laporan.status');
     Route::patch('laporan/{laporan}/nilai', [LaporanController::class, 'updateNilai'])->name('laporan.nilai');
-    Route::get('laporan/export/pdf', [LaporanController::class, 'exportPdf'])->name('laporan.export.pdf');
-    Route::get('laporan/export/excel', [LaporanController::class, 'exportExcel'])->name('laporan.export.excel');
     Route::post('laporan/{laporan}/komentar', [LaporanController::class, 'storeComment'])->name('laporan.komentar.store');
 
     Route::prefix('admin')->name('admin.')->middleware('admin')->group(function () {
