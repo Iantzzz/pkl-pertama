@@ -22,7 +22,7 @@
                 </div>
                 <div class="sm:col-span-2">
                     <label class="block text-xs font-semibold text-warm-500 dark:text-warm-400 uppercase tracking-wider mb-1">Deskripsi</label>
-                    <div class="text-warm-700 dark:text-warm-300 whitespace-pre-line bg-warm-50 dark:bg-warm-700/30 rounded-xl p-4 border border-warm-200 dark:border-warm-700">{!! $laporan->deskripsi !!}</div>
+                    <div class="text-warm-700 dark:text-warm-300 whitespace-pre-line bg-warm-50 dark:bg-warm-700/30 rounded-xl p-4 border border-warm-200 dark:border-warm-700">{{ $laporan->deskripsi }}</div>
                 </div>
                 <div>
                     <label class="block text-xs font-semibold text-warm-500 dark:text-warm-400 uppercase tracking-wider mb-1">Status</label>
